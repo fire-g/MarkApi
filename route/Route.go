@@ -41,10 +41,11 @@ type route struct {
 type Router struct {
 	routes  []*route
 	filters []http.HandlerFunc
+	version string
 }
 
-func New() *Router {
-	return &Router{}
+func New(version string) *Router {
+	return &Router{version: version}
 }
 
 // Get adds a new Route for GET requests.
@@ -53,9 +54,19 @@ func (r *Router) Get(pattern string, handler http.HandlerFunc) {
 	r.AddRoute(GET, pattern, handler)
 }
 
+// ApiGet adds a new Route for Get requests base on /api/{version}/ route
+func (r *Router) ApiGet(pattern string, handler http.HandlerFunc) {
+	r.Get("/api/"+r.version+"/"+pattern, handler)
+}
+
 // Put adds a new Route for PUT requests.
 func (r *Router) Put(pattern string, handler http.HandlerFunc) {
 	r.AddRoute(PUT, pattern, handler)
+}
+
+// ApiPut adds a new Route for PUT requests base on /api/{version}/ route
+func (r *Router) ApiPut(pattern string, handler http.HandlerFunc) {
+	r.Put("/api/"+r.version+"/"+pattern, handler)
 }
 
 // Del adds a new Route for DELETE requests.
@@ -63,9 +74,19 @@ func (r *Router) Del(pattern string, handler http.HandlerFunc) {
 	r.AddRoute(DELETE, pattern, handler)
 }
 
+// ApiDel adds a new Route for DELETE requests base on /api/{version}/ route
+func (r *Router) ApiDel(pattern string, handler http.HandlerFunc) {
+	r.Del("/api/"+r.version+"/"+pattern, handler)
+}
+
 // Patch adds a new Route for PATCH requests.
 func (r *Router) Patch(pattern string, handler http.HandlerFunc) {
 	r.AddRoute(PATCH, pattern, handler)
+}
+
+// ApiPatch adds a new Route for PATCH requests base on /api/{version}/ route
+func (r *Router) ApiPatch(pattern string, handler http.HandlerFunc) {
+	r.Patch("/api/"+r.version+"/"+pattern, handler)
 }
 
 // Post adds a new Route for POST requests.
@@ -73,7 +94,12 @@ func (r *Router) Post(pattern string, handler http.HandlerFunc) {
 	r.AddRoute(POST, pattern, handler)
 }
 
-// Adds a new Route for Static http requests. Serves
+// ApiPost adds a new Route for POST requests base on /api/{version}/ route
+func (r *Router) ApiPost(pattern string, handler http.HandlerFunc) {
+	r.Post("/api/"+r.version+"/"+pattern, handler)
+}
+
+// Static Adds a new Route for Static http requests. Serves
 // static files from the specified directory
 func (r *Router) Static(pattern string, dir string) {
 	//append a regex to the param to match everything
@@ -86,7 +112,7 @@ func (r *Router) Static(pattern string, dir string) {
 	})
 }
 
-// Adds a new Route to the Handler
+// AddRoute Adds a new Route to the Handler
 func (r *Router) AddRoute(method string, pattern string, handler http.HandlerFunc) {
 
 	//split the url into sections
