@@ -1,1 +1,1 @@
-module "mark-api"
+module "github.com/mark-api"

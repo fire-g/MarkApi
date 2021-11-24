@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"mark-api/route"
+	"github.com/mark-api/route"
 )
 
 var (
