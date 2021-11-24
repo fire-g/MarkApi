@@ -1,3 +1,3 @@
-module github.com/mark-api
+module github.com/fire-g/mark-api
 
 go 1.17
